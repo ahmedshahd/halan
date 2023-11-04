@@ -1,18 +1,76 @@
-<div>
-  <h2>Github User Search</h2>
-  <input type="text" [formControl]="searchControl" (input)="search()" placeholder="Search GitHub Users" />
+<div class="search-container">
+  <h2 class="serach__header">Github User Search</h2>
+  <span class="p-input-icon-left">
+    <i class="pi pi-search"></i>
+    <input
+      type="text"
+      class="seacrh__input"
+      pInputText
+      [formControl]="searchControl"
+      (input)="search()"
+    />
+  </span>
+</div>
 
-  <div *ngIf="loading$ | async">
-    Loading...
-  </div>
+<ng-container *ngIf="(loading$ | async) === true; else dataContent">
+  <p-progressSpinner
+    styleClass="w-4rem h-4rem"
+    strokeWidth="8"
+    fill="var(--surface-ground)"
+    animationDuration=".5s"
+  ></p-progressSpinner>
+</ng-container>
+
+<ng-template #dataContent>
+  <ng-container *ngIf="users$ | async as users">
+    <ng-container *ngIf="users.length > 0; else noUsers">
+      <div class="card">
+        <p-table
+          [value]="users"
+          styleClass="p-datatable-gridlines"
+          [tableStyle]="{ 'min-width': '50rem' }"
+          [paginator]="true"
+          [rowsPerPageOptions]="[10, 25, 50]"
+          [rows]="10"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>id</th>
+              <th>Avatar</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Score</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-user>
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>
+                <img
+                  [alt]="user.name"
+                  [src]="user.avatar_url"
+                  width="32"
+                  style="vertical-align: middle"
+                />
+              </td>
+              <td>{{ user.login }}</td>
+              <td>{{ user.type }}</td>
+              <td>{{ user.score }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </ng-container>
+  </ng-container>
 
   <div *ngIf="error$ | async as error">
-    Error: {{ error }}
+    <span>
+      {{ error }}
+    </span>
   </div>
+</ng-template>
 
-  <ul>
-    <li *ngFor="let user of users$ | async; let i = index">
-      <a [href]="user.html_url" target="_blank">{{ user.login }}</a>
-    </li>
-  </ul>
-</div>
+<ng-template #noUsers>
+  <div>No users available</div>
+</ng-template>

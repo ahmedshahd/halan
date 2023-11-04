@@ -9,6 +9,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { githubReducer } from 'src/state/reducers';
 import { GithubEffects } from 'src/state/effects';
+import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { MessagesModule } from 'primeng/messages';
 
 @NgModule({
   declarations: [
@@ -22,6 +26,10 @@ import { GithubEffects } from 'src/state/effects';
     HttpClientModule,
     EffectsModule.forRoot([GithubEffects]),
     StoreModule.forRoot({ github: githubReducer }),
+    TableModule,
+    InputTextModule,
+    ProgressSpinnerModule,
+    MessagesModule,
 
   ],
   providers: [],

@@ -1,31 +1,37 @@
-
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { GithubService } from './github.service';
+import { searchUsers } from 'src/state/actions';
+import { selectGithubError, selectGithubLoading, selectGithubUsers } from 'src/state/selectors';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'halan-assignment';
   searchControl = new FormControl();
-  githubUsers$: Observable<any[]>;
 
-  constructor(private githubService: GithubService) {
+  users$ = this.store.pipe(select(selectGithubUsers));
+  loading$ = this.store.pipe(select(selectGithubLoading));
+  error$ = this.store.pipe(select(selectGithubError));
+
+  constructor(private store: Store) {
   }
-
-  ngOnInit() {
-    this.githubUsers$ = this.searchControl.valueChanges.pipe(
-      debounceTime(400),
+  search() {
+    this.searchControl.valueChanges.pipe(
+      debounceTime(1000), // Wait for a 1000 ms pause in events
       distinctUntilChanged(),
-      switchMap((term) => this.githubService.searchUsers(term)),
-    );
-
+      switchMap((query) => this.searchUsers(query))
+    ).subscribe()
   }
 
+  searchUsers(query: string): Observable<any> {
+    this.store.dispatch(searchUsers({ query }));
+    return of({});
+  }
 
 }

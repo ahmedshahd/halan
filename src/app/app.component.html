@@ -1,8 +1,18 @@
 <div>
-  <h2>GitHub User Search</h2>
-  <input type="text" [formControl]="searchControl" placeholder="your-search-placeholder" />
+  <h2>Github User Search</h2>
+  <input type="text" [formControl]="searchControl" (input)="search()" placeholder="Search GitHub Users" />
+
+  <div *ngIf="loading$ | async">
+    Loading...
+  </div>
+
+  <div *ngIf="error$ | async as error">
+    Error: {{ error }}
+  </div>
+
   <ul>
-    <li *ngFor="let user of githubUsers$ | async">{{user.login}}</li>
+    <li *ngFor="let user of users$ | async; let i = index">
+      <a [href]="user.html_url" target="_blank">{{ user.login }}</a>
+    </li>
   </ul>
 </div>
-<router-outlet></router-outlet>

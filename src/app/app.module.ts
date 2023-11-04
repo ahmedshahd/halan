@@ -5,6 +5,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { githubReducer } from 'src/state/reducers';
+import { GithubEffects } from 'src/state/effects';
 
 @NgModule({
   declarations: [
@@ -15,7 +19,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    EffectsModule.forRoot([GithubEffects]),
+    StoreModule.forRoot({ github: githubReducer }),
+
   ],
   providers: [],
   bootstrap: [AppComponent]

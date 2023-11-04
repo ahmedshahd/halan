@@ -23,7 +23,7 @@ export class AppComponent {
   }
   search() {
     this.searchControl.valueChanges.pipe(
-      debounceTime(1000), // Wait for a 1000 ms pause in events
+      debounceTime(300),
       distinctUntilChanged(),
       switchMap((query) => this.searchUsers(query))
     ).subscribe()
